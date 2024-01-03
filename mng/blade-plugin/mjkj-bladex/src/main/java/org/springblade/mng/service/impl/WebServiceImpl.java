@@ -456,7 +456,7 @@ public class WebServiceImpl implements IWebService {
 
 			//校验是否有敏感字
 			boolean wordFlag = this.checkSensitiveWord(question);
-			if (wordFlag) {//不存在敏感词
+			if (!wordFlag) {//不存在敏感词
 				return null;
 			}
 			Date now = DateUtil.now();

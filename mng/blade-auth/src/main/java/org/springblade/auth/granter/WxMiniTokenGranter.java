@@ -71,7 +71,7 @@ public class WxMiniTokenGranter extends AbstractTokenGranter {
 		if(Func.isNotEmpty(userId) && userId!=-1){//当前人是登录状态
 			String userAccount = AuthUtil.getUserAccount();
 			String tenantId = AuthUtil.getTenantId();
-			userInfoR = userClient.userInfo(userAccount, tenantId);
+			userInfoR = userClient.userInfo(tenantId, userAccount);
 		}
 		if(Func.isEmpty(userInfoR)){//登录-------------
 			WxUserParam wxUserParam=new WxUserParam();

@@ -490,6 +490,7 @@ public class ChatGPTServiceImpl implements IChatGPTService {
 			bodyMap.put("model", chaggptModel);
 			bodyMap.put("messages", messagesList);
 			bodyMap.put("max_tokens", ChatgptConfig.getChatgptMaxToken());
+			String bodyJson = JSONUtil.toJsonStr(bodyMap);
 			publicParam.setBody(JSONUtil.toJsonStr(bodyMap));
 			String jsonStr = JsonUtil.toJson(publicParam);
 
@@ -501,9 +502,10 @@ public class ChatGPTServiceImpl implements IChatGPTService {
 			//最多发送5次
 			for (int i = 0; i < 5; i++) {
 				try {
-					String result = HttpRequest.post(ChatgptConfig.getHttpUrl())
+					String result = HttpRequest.post(ChatgptConfig.getChatgptUrl())
 						.header("Content-Type", "application/json;charset:utf-8")
-						.body(body).execute().body();
+						.header("Authorization", "Bearer " + accountModel.getApiKey())
+						.body(bodyJson).execute().body();
 					if (result.contains("This model's maximum context length")) {//说明token太长
 						List<MessageModel> messagesNewList = new ArrayList<>();
 						messagesNewList.add(messagesList.get(messagesList.size() - 1));//最后一条
@@ -525,12 +527,14 @@ public class ChatGPTServiceImpl implements IChatGPTService {
 						Thread.sleep(1000);
 						continue;
 					}
+/*
 					ResultModel resultModel = JsonUtil.parse(result, ResultModel.class);
 					if (Func.isEmpty(resultModel) || resultModel.getCode() != 200) {
 						Thread.sleep(1000);
 						continue;//中途失败
 					}
-					resultStr = resultModel.getResultStr();
+*/
+					resultStr = result;
 					break;
 				} catch (Exception e) {
 					e.printStackTrace();
