@@ -17,6 +17,10 @@ public class AuthProvider {
 	private static final List<String> DEFAULT_SKIP_URL = new ArrayList<>();
 
 	static {
+		DEFAULT_SKIP_URL.add("/open-chat/chat/open/get/**");
+		DEFAULT_SKIP_URL.add("/open-chat/chat/open/send/**");
+		DEFAULT_SKIP_URL.add("/open-chat/chat/open/cssz/**");
+		DEFAULT_SKIP_URL.add("/open-chat/chat/open/wxPay/**");
 		DEFAULT_SKIP_URL.add("/example");
 		DEFAULT_SKIP_URL.add("/oauth/token/**");
 		DEFAULT_SKIP_URL.add("/oauth/captcha/**");
