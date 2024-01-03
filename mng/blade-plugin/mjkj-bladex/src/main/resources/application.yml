@@ -25,3 +25,5 @@ blade:
   jackson:
     # 支持text文本请求,与报文加密同时开启
     support-text-plain: true
+  xss:
+    enabled: false
