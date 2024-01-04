@@ -27,3 +27,7 @@ blade:
     support-text-plain: true
   xss:
     enabled: false
+  log:
+    request:
+      error-log: false
+      enabled: false
