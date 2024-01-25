@@ -9,8 +9,6 @@ WORKDIR /blade/message
 EXPOSE 9873
 #项目的启动端口号
 
-ADD ./target/blade-message.jar ./app.jar
+ADD ./target/mjkj-message.jar ./message.jar
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
-
-CMD ["--spring.profiles.active=prod"]
+CMD java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar message.jar --spring.profiles.active=prod

@@ -8,8 +8,6 @@ WORKDIR /blade/user
 
 EXPOSE 9876
 
-ADD ./target/blade-user.jar ./app.jar
+ADD ./target/blade-user.jar ./user.jar
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
-
-CMD ["--spring.profiles.active=prod"]
+CMD java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar user.jar --spring.profiles.active=prod

@@ -9,8 +9,6 @@ WORKDIR /blade/mjkjbladex
 EXPOSE 9874
 #项目的启动端口号
 
-ADD ./target/mjkj-bladex.jar ./app.jar
+ADD ./target/mjkj-bladex.jar ./mjkj.jar
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
-
-CMD ["--spring.profiles.active=prod"]
+CMD java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar mjkj.jar --spring.profiles.active=prod
