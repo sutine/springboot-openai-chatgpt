@@ -16,4 +16,4 @@ EXPOSE 9871
 #项目的启动端口号
 ADD ./target/blade-auth.jar ./auth.jar
 
-CMD java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar auth.jar --spring.profiles.active=prod
+CMD java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar auth.jar --spring.profiles.active=prod --logging.file.name=logs/auth.log

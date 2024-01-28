@@ -10,4 +10,4 @@ EXPOSE 9872
 
 ADD ./target/blade-gateway.jar ./gateway.jar
 
-CMD java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar gateway.jar --spring.profiles.active=prod
+CMD java ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar gateway.jar --spring.profiles.active=prod --logging.file.name=logs/gateway.log

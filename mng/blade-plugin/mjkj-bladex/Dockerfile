@@ -2,9 +2,9 @@ FROM bladex/alpine-java:openjdk8-openj9_cn_slim
 
 MAINTAINER bladejava@qq.com
 
-RUN mkdir -p /blade/mjkjbladex
+RUN mkdir -p /blade/mjkj
 
-WORKDIR /blade/mjkjbladex
+WORKDIR /blade/mjkj
 
 EXPOSE 9874
 #项目的启动端口号

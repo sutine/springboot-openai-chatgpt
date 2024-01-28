@@ -2,7 +2,7 @@ version: "2.2"
 services:
 
   auth:
-    image: blade-auth:1.2
+    image: registry.cn-shenzhen.aliyuncs.com/cicene/blade-auth:latest
     container_name: auth
     ports:
       - "9871:9871"
@@ -12,13 +12,13 @@ services:
       nacos:
         condition: service_healthy
     volumes:
-      - ./blade-auth/logs:/blade/auth/target/blade/log
+      - ./blade-auth/logs:/blade/auth/logs
     environment:
       - TZ=Asia/Shanghai
       - JAVA_OPTS=-Xms256m -Xmx256m -Xmn16m -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSParallelRemarkEnabled -XX:SoftRefLRUPolicyMSPerMB=0 -XX:+CMSClassUnloadingEnabled -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M
 
   gateway:
-    image: blade-gateway:1.7
+    image: registry.cn-shenzhen.aliyuncs.com/cicene/blade-gateway:latest
     container_name: gateway
     ports:
       - "9872:9872"
@@ -28,13 +28,13 @@ services:
       nacos:
         condition: service_healthy
     volumes:
-      - ./blade-gateway/logs:/blade/gateway/target/blade/log
+      - ./blade-gateway/logs:/blade/gateway/logs
     environment:
       - TZ=Asia/Shanghai
-      - JAVA_OPTS=-Xms64m -Xmx64m -Xss256k -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC
+      - JAVA_OPTS=-Xms64m -Xmx64m -Xmn16m -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSParallelRemarkEnabled -XX:SoftRefLRUPolicyMSPerMB=0 -XX:+CMSClassUnloadingEnabled -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M
 
   message:
-    image: blade-message:1.2
+    image: registry.cn-shenzhen.aliyuncs.com/cicene/blade-message:latest
     container_name: message
     ports:
       - "9873:9873"
@@ -51,7 +51,7 @@ services:
       - JAVA_OPTS=-Xms256m -Xmx256m -Xmn16m -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSParallelRemarkEnabled -XX:SoftRefLRUPolicyMSPerMB=0 -XX:+CMSClassUnloadingEnabled -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M
 
   mjkj:
-    image: blade-mjkj:1.2
+    image: registry.cn-shenzhen.aliyuncs.com/cicene/blade-mjkj:latest
     container_name: mjkj
     ports:
       - "9874:9874"
@@ -68,7 +68,7 @@ services:
       - JAVA_OPTS=-Xms256m -Xmx256m -Xmn16m -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSParallelRemarkEnabled -XX:SoftRefLRUPolicyMSPerMB=0 -XX:+CMSClassUnloadingEnabled -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M
 
   system:
-    image: blade-system:1.2
+    image: registry.cn-shenzhen.aliyuncs.com/cicene/blade-system:latest
     container_name: system
     links:
       - nacos
@@ -84,7 +84,7 @@ services:
       - JAVA_OPTS=-Xms256m -Xmx256m -Xmn16m -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSParallelRemarkEnabled -XX:SoftRefLRUPolicyMSPerMB=0 -XX:+CMSClassUnloadingEnabled -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M
 
   user:
-    image: blade-user:1.2
+    image: registry.cn-shenzhen.aliyuncs.com/cicene/blade-user:latest
     container_name: user
     links:
       - nacos
@@ -105,6 +105,7 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "1888:1888"
     volumes:
       - ./nginx/html:/usr/share/nginx/html
       - ./nginx/log:/var/log/nginx
@@ -116,9 +117,12 @@ services:
   nacos:
     image: nacos/nacos-server:latest
     container_name: nacos
-    restart: always
     env_file:
       - ./nacos/nacos-standlone-mysql.env
+    environment:
+      - JVM_XMS=128m
+      - JVM_XMX=128m
+      - JVM_XMN=16m
     volumes:
       - ./nacos/logs/:/home/nacos/logs
     ports:
@@ -129,6 +133,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    #    restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8848/nacos/v1/console/health/readiness" ]
       interval: 5s
@@ -144,11 +149,11 @@ services:
     volumes:
       - ./mysql8.0.22/conf.d:/etc/mysql/conf.d
       - ./mysql8.0.22/data:/var/lib/mysql
+    security_opt:
+      - seccomp:unconfined
     environment:
       - TZ=Asia/Shanghai
       - MYSQL_ROOT_PASSWORD=123456
-    security_opt:
-      - seccomp:unconfined
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       interval: 5s
@@ -172,7 +177,6 @@ services:
   minio:
     image: minio/minio
     container_name: minio
-    restart: always
     ports:
       - "9000:9000"
       - "9099:9099"
@@ -183,6 +187,7 @@ services:
       MINIO_ROOT_PASSWORD: minioadmin
       TZ: Asia/Shanghai
     command: server --address ":9099" --console-address ":9000" /data
+    restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
